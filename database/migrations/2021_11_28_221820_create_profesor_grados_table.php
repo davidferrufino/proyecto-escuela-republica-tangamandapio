@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateProfesorGradosTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('profesores_grados', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('id_profesor')->constrained('profesores')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreignId('id_grado')->constrained('grados')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('profesores_grados');
+    }
+}
