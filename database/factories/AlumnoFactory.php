@@ -18,10 +18,10 @@ class AlumnoFactory extends Factory
 
         return [
             'id_grado' => $this->faker->randomElement($grados),
-            'nombre' => $this->faker->firstName,
-            'numero_identidad' => '0704'.$this->faker->numberBetween(2000,2019)."00".$this->faker->numerify("###"),
-            'numero_cuenta' => $this->faker->numberBetween(2000,2019).'2500'.$this->faker->numerify('###'),
-            'telefono' => $this->faker->unique()->numerify("########"),
+            'nombre' => $this->faker->name,
+            'numero_identidad' => '0704'.$this->faker->numberBetween(2000,2019).$this->faker->unique($reset = true)->numerify("#####"),
+            'numero_cuenta' => $this->faker->numberBetween(2000,2019).'250'.$this->faker->unique($reset = true)->numerify('####'),
+            'telefono' => $this->faker->numerify("#####").$this->faker->unique($reset = true)->numerify('###'),
             'estado' => $this->faker->randomElement([0, 1])
         ];
     }

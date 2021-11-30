@@ -19,9 +19,9 @@ class CreateAlumnosTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string('nombre', 150);
-            $table->string('numero_identidad', 13);
-            $table->string('numero_cuenta', 11);
-            $table->string('telefono', 8);
+            $table->string('numero_identidad', 13)->unique();
+            $table->string('numero_cuenta', 11)->unique();
+            $table->string('telefono', 8)->unique();
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });

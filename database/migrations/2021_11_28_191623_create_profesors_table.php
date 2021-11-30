@@ -16,10 +16,10 @@ class CreateProfesorsTable extends Migration
         Schema::create('profesores', function (Blueprint $table) {
             $table->id();
             $table->string('nombre', 150);
-            $table->string('numero_identidad', 13);
-            $table->string('numero_empleado', 11);
+            $table->string('numero_identidad', 13)->unique();
+            $table->string('numero_empleado', 11)->unique();
             $table->string('profesion', 25);
-            $table->string('telefono', 8);
+            $table->string('telefono', 8)->unique();
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });

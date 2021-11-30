@@ -22,11 +22,11 @@ class ProfesorFactory extends Factory
         ];
 
         return [
-            'nombre' => $this->faker->firstName,
-            'numero_identidad' => '0704'.$this->faker->numberBetween(2000,2019)."00".$this->faker->numerify("###"),
-            'numero_empleado' => $this->faker->numberBetween(2000,2019).'150'.$this->faker->numerify('###'),
+            'nombre' => $this->faker->name,
+            'numero_identidad' => '0704'.$this->faker->numberBetween(2000,2019).$this->faker->unique($reset = true)->numerify("#####"),
+            'numero_empleado' => $this->faker->numberBetween(2000,2019).'150'.$this->faker->unique($reset = true)->numerify('####'),
             'profesion' => $this->faker->randomElement($profesiones),
-            'telefono' => $this->faker->unique()->numerify("########"),
+            'telefono' => $this->faker->numerify("#####").$this->faker->unique($reset = true)->numerify('###'),
             'estado' => $this->faker->randomElement([0, 1])
         ];
     }

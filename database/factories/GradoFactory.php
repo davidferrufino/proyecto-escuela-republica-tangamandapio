@@ -14,7 +14,8 @@ class GradoFactory extends Factory
     public function definition()
     {
         return [
-            'nombre' => $this->faker->uuid
+            'nombre' => 'Grado '.$this->faker->numberBetween(1,12),
+            'codigo' => $this->faker->unique()->numerify('#####')
         ];
     }
 }
