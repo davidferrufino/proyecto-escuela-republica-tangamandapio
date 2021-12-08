@@ -11,9 +11,23 @@ class Profesor extends Model
 
     protected $table = 'profesores';
 
+    protected $fillable = [
+        'nombre',
+        'numero_identidad',
+        'numero_empleado',
+        'telefono',
+        'profesion',
+        'estado'
+    ];
+
     public function grados()
     {
         return $this->belongsToMany(Grado::class, 'profesores_grados', 'id_profesor', 'id_grado')
             ->as('grados');
+    }
+
+    public function scopeFilter($query, $busqueda)
+    {
+        return $query->where("nombre", 'like', "%{$busqueda}%");
     }
 }

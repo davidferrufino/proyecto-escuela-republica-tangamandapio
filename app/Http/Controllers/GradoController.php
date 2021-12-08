@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Grado;
-use App\Http\Requests\StoreGradoRequest;
-use App\Http\Requests\UpdateGradoRequest;
+use App\Models\Profesor;
+use Illuminate\Http\Request;
 
 class GradoController extends Controller
 {
@@ -15,7 +15,9 @@ class GradoController extends Controller
      */
     public function index()
     {
-        //
+        return view('Grados.index', [
+            'grados' => Grado::paginate(10),
+        ]);
     }
 
     /**
@@ -25,7 +27,7 @@ class GradoController extends Controller
      */
     public function create()
     {
-        //
+        return view('Grados.create');
     }
 
     /**
@@ -34,9 +36,22 @@ class GradoController extends Controller
      * @param  \App\Http\Requests\StoreGradoRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreGradoRequest $request)
+    public function store(Request $request)
     {
-        //
+        $validado = $request->validate([
+            'nombre' => 'required',
+            'codigo' => 'required'
+        ],[
+            'nombre.required' => 'El nombre es obligatorio.',
+            'codigo.required' => 'El código es obligatorio.',
+        ]);
+
+        Grado::create([
+            'nombre' => $validado['nombre'],
+            'codigo' => $validado['codigo']
+        ]);
+
+        return redirect()->route('grados.index');
     }
 
     /**
@@ -47,7 +62,7 @@ class GradoController extends Controller
      */
     public function show(Grado $grado)
     {
-        //
+        return view('Grados.show', ['grado' => $grado, 'profesores' => Profesor::all()]);
     }
 
     /**
@@ -58,7 +73,7 @@ class GradoController extends Controller
      */
     public function edit(Grado $grado)
     {
-        //
+        return view('Grados.edit', ['grado' => $grado]);
     }
 
     /**
@@ -68,9 +83,23 @@ class GradoController extends Controller
      * @param  \App\Models\Grado  $grado
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateGradoRequest $request, Grado $grado)
+    public function update(Request $request, Grado $grado)
     {
-        //
+        $validated = $request->validate([
+            'nombre' => 'required',
+            'codigo' => 'required'
+        ],[
+            'nombre.required' => 'El nombre es obligatorio.',
+            'codigo.required' => 'El código es obligatorio.',
+            'codigo.unique' => 'Ya existe un grado con este código.',
+        ]);
+
+        $grado->nombre = $validated['nombre'];
+        $grado->codigo = $validated['codigo'];
+
+        $grado->save();
+
+        return redirect()->route('grados.index');
     }
 
     /**
@@ -81,6 +110,30 @@ class GradoController extends Controller
      */
     public function destroy(Grado $grado)
     {
-        //
+        $grado->delete();
+
+        return redirect()->route('grados.index');
+    }
+
+    public function agregar_profesor(Request $request, Grado $grado){
+        $validado = $request->validate([
+            'profesor' => 'required',
+        ]);
+
+        $grado->profesores()->attach($validado['profesor']);
+
+        return redirect()->route('grados.show', $grado);
+    }
+
+    public function filter(Request $request)
+    {
+        if($request->busqueda != ""){
+            return view('Grados.index', [
+                'grados' => Grado::filter($request->busqueda)->paginate(10),
+            ]);
+        }else{
+            return redirect()->route('grados.index');
+        }
+        
     }
 }

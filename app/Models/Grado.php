@@ -9,6 +9,11 @@ class Grado extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'nombre',
+        'codigo'
+    ];
+
     public function alumnos()
     {
         return $this->hasMany(Alumno::class, 'id_grado');
@@ -19,4 +24,10 @@ class Grado extends Model
         return $this->belongsToMany(Profesor::class, 'profesores_grados', 'id_grado', 'id_profesor',)
             ->as('profesores');
     }
+
+    public function scopeFilter($query, $busqueda)
+    {
+        return $query->where("nombre", 'like', "%{$busqueda}%");
+    }
+    
 }

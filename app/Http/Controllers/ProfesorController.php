@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profesor;
-use App\Http\Requests\StoreProfesorRequest;
-use App\Http\Requests\UpdateProfesorRequest;
+use Illuminate\Http\Request;
 
 class ProfesorController extends Controller
 {
@@ -15,7 +14,9 @@ class ProfesorController extends Controller
      */
     public function index()
     {
-        //
+        return view('Profesores.index', [
+            'profesores' => Profesor::paginate(10),
+        ]);
     }
 
     /**
@@ -25,7 +26,7 @@ class ProfesorController extends Controller
      */
     public function create()
     {
-        //
+        return view('Profesores.create');
     }
 
     /**
@@ -34,9 +35,38 @@ class ProfesorController extends Controller
      * @param  \App\Http\Requests\StoreProfesorRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreProfesorRequest $request)
+    public function store(Request $request)
     {
-        //
+        if ($request->has('estado')) {
+            $estado = true;
+        } else {
+            $estado = false;
+        }
+
+        $validado = $request->validate([
+            'nombre' => 'required',
+            'numero_identidad' => 'required',
+            'numero_empleado' => 'required',
+            'telefono' => 'required',
+            'profesion' => 'required',
+        ], [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'numero_identidad.required' => 'El número de identiad es obligatorio.',
+            'numero_empleado.required' => 'El número de empleado es obligatorio.',
+            'telefono.required' => 'El telefono es obligatorio.',
+            'profesion.required' => 'La profesion es obligatoria.',
+        ]);
+
+        Profesor::create([
+            'nombre' => $validado['nombre'],
+            'numero_identidad' => $validado['numero_identidad'],
+            'numero_empleado' => $validado['numero_empleado'],
+            'telefono' => $validado['telefono'],
+            'profesion' => $validado['profesion'],
+            'estado' => $estado,
+        ]);
+
+        return redirect()->route('profesores.index');
     }
 
     /**
@@ -47,7 +77,7 @@ class ProfesorController extends Controller
      */
     public function show(Profesor $profesor)
     {
-        //
+        return view('Profesores.show', ['profesor' => $profesor]);
     }
 
     /**
@@ -58,7 +88,7 @@ class ProfesorController extends Controller
      */
     public function edit(Profesor $profesor)
     {
-        //
+        return view('Profesores.edit', ['profesor' => $profesor]);
     }
 
     /**
@@ -68,9 +98,38 @@ class ProfesorController extends Controller
      * @param  \App\Models\Profesor  $profesor
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProfesorRequest $request, Profesor $profesor)
+    public function update(Request $request, Profesor $profesor)
     {
-        //
+        if ($request->has('estado')) {
+            $estado = true;
+        } else {
+            $estado = false;
+        }
+
+        $validado = $request->validate([
+            'nombre' => 'required',
+            'numero_identidad' => 'required',
+            'numero_empleado' => 'required',
+            'telefono' => 'required',
+            'profesion' => 'required',
+        ], [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'numero_identidad.required' => 'El número de identiad es obligatorio.',
+            'numero_empleado.required' => 'El número de empleado es obligatorio.',
+            'telefono.required' => 'El telefono es obligatorio.',
+            'profesion.required' => 'La profesion es obligatoria.',
+        ]);
+
+        $profesor->nombre = $validado['nombre'];
+        $profesor->numero_identidad = $validado['numero_identidad'];
+        $profesor->numero_empleado = $validado['numero_empleado'];
+        $profesor->telefono = $validado['telefono'];
+        $profesor->profesion = $validado['profesion'];
+        $profesor->estado =  $estado;
+
+        $profesor->save();
+
+        return redirect()->route('profesores.index');
     }
 
     /**
@@ -81,6 +140,20 @@ class ProfesorController extends Controller
      */
     public function destroy(Profesor $profesor)
     {
-        //
+        $profesor->delete();
+
+        return redirect()->route('profesores.index');
+    }
+
+    public function filter(Request $request)
+    {
+        if($request->busqueda != ""){
+            return view('Profesores.index', [
+                'profesores' => Profesor::filter($request->busqueda)->paginate(10),
+            ]);
+        }else{
+            return redirect()->route('profesores.index');
+        }
+        
     }
 }

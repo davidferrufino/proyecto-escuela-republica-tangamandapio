@@ -13,11 +13,17 @@ class Alumno extends Model
         'id_grado',
         'nombre',
         'numero_identidad',
+        'numero_cuenta',
         'telefono',
         'estado'
     ];
     
     public function grado(){
         return $this->belongsTo(Grado::class, 'id_grado');
+    }
+
+    public function scopeFilter($query, $busqueda)
+    {
+        return $query->where("nombre", 'like', "%{$busqueda}%");
     }
 }
